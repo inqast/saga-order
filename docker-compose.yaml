@@ -23,8 +23,8 @@ services:
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
-      POSTGRES_DB: cart
-      APP_DB_USER: cart
+      POSTGRES_DB: cart_db
+      APP_DB_USER: cart_user
       APP_DB_PASS: cart
     networks:
       - service
@@ -35,6 +35,41 @@ services:
       - ./docker/postgres/postgresql.conf:/etc/postgresql/postgresql.conf
       - ./docker/postgres/init-database.sh:/docker-entrypoint-initdb.d/init-database.sh
       - ./_data/cart/pgdata:/var/lib/postgresql/data
+
+  order:
+    build:
+      context: .
+      dockerfile: docker/order/Dockerfile
+    restart: unless-stopped
+    networks:
+      - service
+    depends_on:
+      - order-postgres
+    links:
+      - order-postgres
+    ports:
+      - "8081:8081" # gRPC
+    volumes:
+      - ./config.yml:/root/config.yml
+
+  order-postgres:
+    image: postgres:latest
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: order_db
+      APP_DB_USER: order_user
+      APP_DB_PASS: order
+    networks:
+      - service
+    ports:
+      - "5433:5432"
+    command: postgres -c config_file=/etc/postgresql/postgresql.conf
+    volumes:
+      - ./docker/postgres/postgresql.conf:/etc/postgresql/postgresql.conf
+      - ./docker/postgres/init-database.sh:/docker-entrypoint-initdb.d/init-database.sh
+      - ./_data/order/pgdata:/var/lib/postgresql/data
 
 volumes:
   pgdata:

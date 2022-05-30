@@ -14,10 +14,28 @@ cart:
   database:
     host: cart-postgres
     port: 5432
-    user: cart
+    user: cart_user
     password: cart
-    name: cart
+    name: cart_db
     migrations: migrations/cart
+    sslmode: disable
+    driver: pgx
+    connectRetries: 10
+order:
+  grpc:
+    host: order
+    port: 8081
+    maxConnectionIdle: 5 # Minutes
+    timeout: 15 # Seconds
+    maxConnectionAge: 5 # Minutes
+
+  database:
+    host: order-postgres
+    port: 5432
+    user: order_user
+    password: order
+    name: order_db
+    migrations: migrations/order
     sslmode: disable
     driver: pgx
     connectRetries: 10

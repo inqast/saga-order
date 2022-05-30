@@ -28,3 +28,21 @@ protobuf-cart:
 		--go-grpc_out=pkg/api/cart \
 		--go-grpc_opt=paths=source_relative \
 		./api/cart/api.proto
+
+.PHONY: build-order
+build-order:
+	go mod download && CGO_ENABLED=0  go build \
+		-tags='no_mysql no_sqlite3' \
+		-ldflags=" \
+			-X 'github.com/$(SERVICE_PATH)/internal/config.version=$(VERSION)' \
+			-X 'github.com/$(SERVICE_PATH)/internal/config.commitHash=$(COMMIT_HASH)' \
+		" \
+		-o ./bin/service$(shell go env GOEXE) ./cmd/order/main.go
+
+protobuf-order:
+	protoc --proto_path=./api/order \
+		--go_out=pkg/api/order \
+		--go_opt=paths=source_relative \
+		--go-grpc_out=pkg/api/order \
+		--go-grpc_opt=paths=source_relative \
+		./api/order/api.proto

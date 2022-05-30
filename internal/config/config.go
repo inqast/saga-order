@@ -60,9 +60,15 @@ type CartConfig struct {
 	Database DatabaseConfig `yaml:"database"`
 }
 
+type OrderConfig struct {
+	Grpc     GrpcConfig     `yaml:"grpc"`
+	Database DatabaseConfig `yaml:"database"`
+}
+
 type Config struct {
 	loaded bool
-	Cart   CartConfig `yaml:"cart"`
+	Cart   CartConfig  `yaml:"cart"`
+	Order  OrderConfig `yaml:"order"`
 }
 
 func ReadConfig(filePath string) error {
