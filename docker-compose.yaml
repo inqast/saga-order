@@ -1,0 +1,45 @@
+version: "3.9"
+
+services:
+  cart:
+    build:
+      context: .
+      dockerfile: docker/cart/Dockerfile
+    restart: unless-stopped
+    networks:
+      - service
+    depends_on:
+      - cart-postgres
+    links:
+      - cart-postgres
+    ports:
+      - "8082:8082" # gRPC
+    volumes:
+      - ./config.yml:/root/config.yml
+
+  cart-postgres:
+    image: postgres:latest
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: cart
+      APP_DB_USER: cart
+      APP_DB_PASS: cart
+    networks:
+      - service
+    ports:
+      - "5432:5432"
+    command: postgres -c config_file=/etc/postgresql/postgresql.conf
+    volumes:
+      - ./docker/postgres/postgresql.conf:/etc/postgresql/postgresql.conf
+      - ./docker/postgres/init-database.sh:/docker-entrypoint-initdb.d/init-database.sh
+      - ./_data/cart/pgdata:/var/lib/postgresql/data
+
+volumes:
+  pgdata:
+    driver: local
+
+networks:
+  service:
+    driver: bridge

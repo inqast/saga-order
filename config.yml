@@ -1,0 +1,23 @@
+project:
+  name: Saga Order Creation Distributed Transaction
+  debug: true
+  environment: development
+
+cart:
+  grpc:
+    host: cart
+    port: 8082
+    maxConnectionIdle: 5 # Minutes
+    timeout: 15 # Seconds
+    maxConnectionAge: 5 # Minutes
+
+  database:
+    host: cart-postgres
+    port: 5432
+    user: cart
+    password: cart
+    name: cart
+    migrations: migrations/cart
+    sslmode: disable
+    driver: pgx
+    connectRetries: 10
