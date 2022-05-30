@@ -1,0 +1,34 @@
+syntax = "proto3";
+
+option go_package = "github.com/inqast/saga-order/api/cart";
+
+package cart;
+
+import "google/protobuf/empty.proto";
+
+message ID {
+  int64 id = 1;
+}
+
+message CartItem {
+  int64 user_id = 2;
+  int64 product_id = 3;
+  int64 count = 4;
+}
+
+message CartItemRequest {
+  int64 user_id = 2;
+  int64 product_id = 3;
+}
+
+message GetCartItemsResponse {
+  repeated CartItem cart_items = 1;
+}
+
+service Cart {
+  rpc CreateCartItem(CartItem) returns (google.protobuf.Empty) {}
+  rpc ReadCartItem(CartItemRequest) returns (CartItem) {}
+  rpc UpdateCartItem(CartItem) returns (google.protobuf.Empty) {}
+  rpc DeleteCartItem(CartItemRequest) returns (google.protobuf.Empty) {}
+  rpc GetCartItemsByUserId(ID) returns (GetCartItemsResponse) {}
+}
