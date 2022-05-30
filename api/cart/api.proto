@@ -11,14 +11,14 @@ message ID {
 }
 
 message CartItem {
-  int64 user_id = 2;
-  int64 product_id = 3;
-  int64 count = 4;
+  int64 user_id = 1;
+  int64 product_id = 2;
+  int64 count = 3;
 }
 
 message CartItemRequest {
-  int64 user_id = 2;
-  int64 product_id = 3;
+  int64 user_id = 1;
+  int64 product_id = 2;
 }
 
 message GetCartItemsResponse {
