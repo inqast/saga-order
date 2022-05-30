@@ -1,0 +1,40 @@
+syntax = "proto3";
+
+option go_package = "github.com/inqast/saga-order/api/order";
+
+package order;
+
+import "google/protobuf/empty.proto";
+
+message ID {
+  int64 id = 1;
+}
+
+message Product {
+  int64 id = 1;
+  int64 count = 2;
+}
+
+enum Status {
+  NEW = 0;
+  DELETED  = 1;
+}
+
+message Order {
+  int64 id = 1;
+  int64 user_id = 2;
+  Status status = 3;
+  repeated Product products = 4;
+}
+
+message GetOrdersResponse {
+  repeated Order orders = 1;
+}
+
+service OrderService {
+  rpc CreateOrder(Order) returns (ID) {}
+  rpc ReadOrder(ID) returns (Order) {}
+  rpc UpdateOrder(Order) returns (google.protobuf.Empty) {}
+  rpc DeleteOrder(ID) returns (google.protobuf.Empty) {}
+  rpc GetOrdersByUserId(ID) returns (GetOrdersResponse) {}
+}
