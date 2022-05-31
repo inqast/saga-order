@@ -50,7 +50,10 @@ func TestGetOrdersByUserId(t *testing.T) {
 	mockRepo := NewRepositoryMock(mc)
 	mockRepo.GetOrdersByUserIdMock.Return(testData, nil)
 	mockRepo.GetOrdersByUserIdMock.Expect(ctx, testUserID)
-	svc := New(mockRepo)
+	mockClient := NewClientMock(mc)
+	mockProducer := NewProducerMock(mc)
+
+	svc, err := New(mockRepo, mockClient, mockProducer)
 
 	resp, err := svc.GetOrdersByUserId(ctx, &pb.ID{Id: int64(testUserID)})
 
@@ -75,10 +78,13 @@ func TestGetOrdersByUserIdNotFound(t *testing.T) {
 
 	mockRepo := NewRepositoryMock(mc)
 	mockRepo.GetOrdersByUserIdMock.Return([]*models.Order{}, repository.ErrNotFound)
-	svc := New(mockRepo)
+	mockClient := NewClientMock(mc)
+	mockProducer := NewProducerMock(mc)
+
+	svc, err := New(mockRepo, mockClient, mockProducer)
 
 	ctx := context.Background()
-	_, err := svc.GetOrdersByUserId(ctx, &pb.ID{Id: 1})
+	_, err = svc.GetOrdersByUserId(ctx, &pb.ID{Id: 1})
 
 	assert.Equal(t, err, status.Error(codes.NotFound, repository.ErrNotFound.Error()))
 }

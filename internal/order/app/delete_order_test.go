@@ -24,9 +24,12 @@ func TestDeleteOrder(t *testing.T) {
 	mockRepo := NewRepositoryMock(mc)
 	mockRepo.DeleteOrderMock.Return(nil)
 	mockRepo.DeleteOrderMock.Expect(ctx, testOrderId)
-	svc := New(mockRepo)
+	mockClient := NewClientMock(mc)
+	mockProducer := NewProducerMock(mc)
 
-	_, err := svc.DeleteOrder(ctx, &pb.ID{
+	svc, err := New(mockRepo, mockClient, mockProducer)
+
+	_, err = svc.DeleteOrder(ctx, &pb.ID{
 		Id: int64(testOrderId),
 	})
 
@@ -40,10 +43,14 @@ func TestDeleteOrderNotFound(t *testing.T) {
 
 	mockRepo := NewRepositoryMock(mc)
 	mockRepo.DeleteOrderMock.Return(repository.ErrNotFound)
-	svc := New(mockRepo)
+
+	mockClient := NewClientMock(mc)
+	mockProducer := NewProducerMock(mc)
+
+	svc, err := New(mockRepo, mockClient, mockProducer)
 
 	ctx := context.Background()
-	_, err := svc.DeleteOrder(ctx, &pb.ID{})
+	_, err = svc.DeleteOrder(ctx, &pb.ID{})
 
 	assert.Equal(t, err, status.Error(codes.NotFound, repository.ErrNotFound.Error()))
 }

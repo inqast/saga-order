@@ -42,7 +42,10 @@ func TestReadOrder(t *testing.T) {
 		Products: testProducts,
 	}, nil)
 	mockRepo.ReadOrderMock.Expect(ctx, testOrderId)
-	svc := New(mockRepo)
+	mockClient := NewClientMock(mc)
+	mockProducer := NewProducerMock(mc)
+
+	svc, err := New(mockRepo, mockClient, mockProducer)
 
 	order, err := svc.ReadOrder(ctx, &pb.ID{
 		Id: int64(testOrderId),
@@ -65,10 +68,13 @@ func TestReadOrderNotFound(t *testing.T) {
 
 	mockRepo := NewRepositoryMock(mc)
 	mockRepo.ReadOrderMock.Return(&models.Order{}, repository.ErrNotFound)
-	svc := New(mockRepo)
+	mockClient := NewClientMock(mc)
+	mockProducer := NewProducerMock(mc)
+
+	svc, err := New(mockRepo, mockClient, mockProducer)
 
 	ctx := context.Background()
-	_, err := svc.ReadOrder(ctx, &pb.ID{})
+	_, err = svc.ReadOrder(ctx, &pb.ID{})
 
 	assert.Equal(t, err, status.Error(codes.NotFound, repository.ErrNotFound.Error()))
 }

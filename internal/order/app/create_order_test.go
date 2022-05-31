@@ -46,9 +46,17 @@ func TestCreateOrder(t *testing.T) {
 		Status:   testStatus,
 		Products: testProducts,
 	})
-	svc := New(mockRepo)
 
-	_, err := svc.CreateOrder(ctx, &pb.Order{
+	mockClient := NewClientMock(mc)
+	mockClient.GetCartItemsByUserIdMock.Return(testProducts, nil)
+	mockClient.GetCartItemsByUserIdMock.Expect(ctx, testUserId)
+
+	mockProducer := NewProducerMock(mc)
+	mockProducer.SendMessageMock.Return(1, 2, nil)
+
+	svc, err := New(mockRepo, mockClient, mockProducer)
+
+	_, err = svc.CreateOrder(ctx, &pb.Order{
 		UserId:   int64(testUserId),
 		Status:   pb.Status(testStatus),
 		Products: testExternalProducts,

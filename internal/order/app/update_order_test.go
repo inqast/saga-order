@@ -26,9 +26,12 @@ func TestUpdateOrder(t *testing.T) {
 	mockRepo := NewRepositoryMock(mc)
 	mockRepo.UpdateOrderMock.Return(nil)
 	mockRepo.UpdateOrderMock.Expect(ctx, testOrderId, testStatus)
-	svc := New(mockRepo)
+	mockClient := NewClientMock(mc)
+	mockProducer := NewProducerMock(mc)
 
-	_, err := svc.UpdateOrder(ctx, &pb.Order{
+	svc, err := New(mockRepo, mockClient, mockProducer)
+
+	_, err = svc.UpdateOrder(ctx, &pb.Order{
 		Id:     int64(testOrderId),
 		UserId: int64(testUserId),
 		Status: pb.Status(testStatus),
@@ -44,10 +47,13 @@ func TestUpdateOrderNotFound(t *testing.T) {
 
 	mockRepo := NewRepositoryMock(mc)
 	mockRepo.UpdateOrderMock.Return(repository.ErrNotFound)
-	svc := New(mockRepo)
+	mockClient := NewClientMock(mc)
+	mockProducer := NewProducerMock(mc)
+
+	svc, err := New(mockRepo, mockClient, mockProducer)
 
 	ctx := context.Background()
-	_, err := svc.UpdateOrder(ctx, &pb.Order{})
+	_, err = svc.UpdateOrder(ctx, &pb.Order{})
 
 	assert.Equal(t, err, status.Error(codes.NotFound, repository.ErrNotFound.Error()))
 }
