@@ -65,10 +65,17 @@ type OrderConfig struct {
 	Database DatabaseConfig `yaml:"database"`
 }
 
+type KafkaConfig struct {
+	Brokers         string `yaml:"brokers"`
+	ResetOrderTopic string `yaml:"resetOrderTopic"`
+	NewOrderTopic   string `yaml:"newOrderTopic"`
+}
+
 type Config struct {
 	loaded bool
 	Cart   CartConfig  `yaml:"cart"`
 	Order  OrderConfig `yaml:"order"`
+	Kafka  KafkaConfig `yaml:"kafka"`
 }
 
 func ReadConfig(filePath string) error {

@@ -39,3 +39,7 @@ order:
     sslmode: disable
     driver: pgx
     connectRetries: 10
+kafka:
+  brokers: kafka:9092
+  resetOrderTopic: reset_orders
+  newOrderTopic: new_orders

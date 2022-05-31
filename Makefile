@@ -27,7 +27,7 @@ protobuf-cart:
 		--go_opt=paths=source_relative \
 		--go-grpc_out=pkg/api/cart \
 		--go-grpc_opt=paths=source_relative \
-		./api/cart/api.proto
+		./api/cart/cart.proto
 
 .PHONY: build-order
 build-order:
@@ -45,4 +45,4 @@ protobuf-order:
 		--go_opt=paths=source_relative \
 		--go-grpc_out=pkg/api/order \
 		--go-grpc_opt=paths=source_relative \
-		./api/order/api.proto
+		./api/order/order.proto
