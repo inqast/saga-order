@@ -5,10 +5,12 @@ import (
 )
 
 type tserver struct {
-	repo Repository
+	repo     Repository
+	client   Client
+	producer Producer
 	pb.UnimplementedOrderServiceServer
 }
 
-func New(repo Repository) *tserver {
-	return &tserver{repo: repo}
+func New(repo Repository, client Client, producer Producer) (*tserver, error) {
+	return &tserver{repo: repo, client: client, producer: producer}, nil
 }
