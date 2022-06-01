@@ -16,7 +16,7 @@ type ResetHandler struct {
 }
 
 func New(cfg *sarama.Config, repo Repository) (*ResetHandler, error) {
-	reset, err := sarama.NewConsumerGroup([]string{"kafka:9092"}, "storeReset", cfg)
+	reset, err := sarama.NewConsumerGroup([]string{"kafka:9092"}, "resetOrder", cfg)
 	if err != nil {
 		return nil, err
 	}
@@ -32,7 +32,7 @@ func New(cfg *sarama.Config, repo Repository) (*ResetHandler, error) {
 func (r *ResetHandler) StartConsuming(ctx context.Context, cfg config.KafkaConfig) {
 	go func() {
 		for {
-			err := r.consumerGroup.Consume(ctx, []string{cfg.ResetOrderTopic}, r)
+			err := r.consumerGroup.Consume(ctx, []string{cfg.Topics.ResetOrder}, r)
 			if err != nil {
 				log.Printf("reset consumer error: %v", err)
 				time.Sleep(time.Second * 5)
