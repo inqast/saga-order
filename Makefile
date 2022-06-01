@@ -46,3 +46,21 @@ protobuf-order:
 		--go-grpc_out=pkg/api/order \
 		--go-grpc_opt=paths=source_relative \
 		./api/order/order.proto
+
+.PHONY: build-reserve
+build-reserve:
+	go mod download && CGO_ENABLED=0  go build \
+		-tags='no_mysql no_sqlite3' \
+		-ldflags=" \
+			-X 'github.com/$(SERVICE_PATH)/internal/config.version=$(VERSION)' \
+			-X 'github.com/$(SERVICE_PATH)/internal/config.commitHash=$(COMMIT_HASH)' \
+		" \
+		-o ./bin/service$(shell go env GOEXE) ./cmd/reserve/main.go
+
+protobuf-reserve:
+	protoc --proto_path=./api/reserve \
+		--go_out=pkg/api/reserve \
+		--go_opt=paths=source_relative \
+		--go-grpc_out=pkg/api/reserve \
+		--go-grpc_opt=paths=source_relative \
+		./api/reserve/reserve.proto

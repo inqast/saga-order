@@ -55,27 +55,35 @@ func (dbconf *DatabaseConfig) GetMigrationsPath() string {
 	return dbconf.Migrations
 }
 
-type CartConfig struct {
-	Grpc     GrpcConfig     `yaml:"grpc"`
-	Database DatabaseConfig `yaml:"database"`
+type Topics struct {
+	ResetOrder  string `yaml:"resetOrder"`
+	NewOrder    string `yaml:"newOrder"`
+	NewReserves string `yaml:"newReserves"`
 }
 
-type OrderConfig struct {
-	Grpc     GrpcConfig     `yaml:"grpc"`
-	Database DatabaseConfig `yaml:"database"`
+type ConsumerGroups struct {
+	ResetOrder  string `yaml:"resetOrder"`
+	NewOrder    string `yaml:"newOrder"`
+	NewReserves string `yaml:"newReserves"`
 }
 
 type KafkaConfig struct {
-	Brokers         string `yaml:"brokers"`
-	ResetOrderTopic string `yaml:"resetOrderTopic"`
-	NewOrderTopic   string `yaml:"newOrderTopic"`
+	Brokers        string         `yaml:"brokers"`
+	Topics         Topics         `yaml:"topics"`
+	ConsumerGroups ConsumerGroups `yaml:"consumerGroups"`
+}
+
+type ServiceConfig struct {
+	Grpc     GrpcConfig     `yaml:"grpc"`
+	Database DatabaseConfig `yaml:"database"`
 }
 
 type Config struct {
-	loaded bool
-	Cart   CartConfig  `yaml:"cart"`
-	Order  OrderConfig `yaml:"order"`
-	Kafka  KafkaConfig `yaml:"kafka"`
+	loaded  bool
+	Cart    ServiceConfig `yaml:"cart"`
+	Order   ServiceConfig `yaml:"order"`
+	Reserve ServiceConfig `yaml:"reserve"`
+	Kafka   KafkaConfig   `yaml:"kafka"`
 }
 
 func ReadConfig(filePath string) error {

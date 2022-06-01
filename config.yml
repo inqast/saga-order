@@ -39,7 +39,31 @@ order:
     sslmode: disable
     driver: pgx
     connectRetries: 10
+reserve:
+  grpc:
+    host: reserve
+    port: 8083
+    maxConnectionIdle: 5 # Minutes
+    timeout: 15 # Seconds
+    maxConnectionAge: 5 # Minutes
+
+  database:
+    host: reserve-postgres
+    port: 5432
+    user: reserve_user
+    password: reserve
+    name: reserve_db
+    migrations: migrations/reserve
+    sslmode: disable
+    driver: pgx
+    connectRetries: 10
 kafka:
   brokers: kafka:9092
-  resetOrderTopic: reset_orders
-  newOrderTopic: new_orders
+  topics:
+    resetOrder: reset_orders
+    newOrder: new_orders
+    newReserves: new_reserves
+  consumerGroups:
+    resetOrder: resetOrder
+    newOrder: newOrder
+    newReserves: newReserves
