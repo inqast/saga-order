@@ -1,0 +1,23 @@
+syntax = "proto3";
+
+option go_package = "github.com/inqast/saga-order/api/reserve";
+
+package reserve;
+
+message ID {
+  int64 id = 1;
+}
+
+message Reserve {
+  int64 orderId = 1;
+  int64 productId = 2;
+  int64 count = 3;
+}
+
+message GetReservesResponse {
+  repeated Reserve reserves = 1;
+}
+
+service ReserveService {
+  rpc GetReservesByOrderId(ID) returns (GetReservesResponse) {}
+}
