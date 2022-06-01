@@ -17,3 +17,9 @@ type Order struct {
 	Status   int
 	Products []*Product
 }
+
+type Reserve struct {
+	OrderId   int
+	ProductId int
+	Count     int
+}
